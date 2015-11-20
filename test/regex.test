@@ -1,0 +1,77 @@
+UTest({
+	'search string': {
+		'returns an array of the match and all capture groups' () {
+			var regex = new Onig.OnigRegExp('\\w(\\d+)');
+			var match = regex.searchSync('----a123----');
+			deepEq_(match, [
+				{
+					match: 'a123',
+					start: 4,
+					end: 8,
+					index: 0,
+					length: 4
+				},
+				{
+					match: '123',
+					start: 5,
+					end: 8,
+					index: 1,
+					length: 3
+				}
+			]);
+		},
+		'returns null if it does not match' () {
+			var regex = new Onig.OnigRegExp('\\w(\\d+)');
+			var match = regex.searchSync('--------');
+			eq_(match, null);
+		}
+	},
+	'when the string being searched contains a unicode character' : {
+		'returns correct indices and lengths' () {
+			var regex = new Onig.OnigRegExp('a');
+			var match = regex.searchSync('ç√Ωa');
+			has_(match, [
+				{
+					match: 'a',
+					start: 3
+				}
+			]);
+
+			match = regex.searchSync('ç√Ωabcd≈ßåabcd', 5)
+			has_(match, [
+				{
+					match: 'a',
+					start: 10
+				}
+			]);
+		}
+	},
+	'when the string being searched contains non-Basic Multilingual Plane characters': {
+		'returns correct indices and matches' () {
+			var regex = new Onig.OnigRegExp("'");
+			var match = regex.searchSync("'\uD835\uDF97'");
+			has_(match, [
+				{
+					match: "'",
+					start: 0
+				}
+			]);
+
+			match = regex.searchSync("'\uD835\uDF97'", 1);
+			has_(match, [
+				{
+					match: "'",
+					start: 3
+				}
+			]);
+
+			match = regex.searchSync("'\uD835\uDF97'", 2);
+			has_(match, [
+				{
+					match: "'",
+					start: 3
+				}
+			]);
+		}
+	}
+})

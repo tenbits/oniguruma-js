@@ -1,0 +1,51 @@
+var OnigScanner = Onig.OnigScanner;
+UTest({
+	'::findNextMatchSync' : {
+		'returns the index of the matching pattern' () {
+			var scanner = new OnigScanner(["a", "b", "c"]);
+			eq_(scanner.findNextMatchSync("x", 0), null);
+			eq_(scanner.findNextMatchSync("xxaxxbxxc", 0).index, 0)
+			eq_(scanner.findNextMatchSync("xxaxxbxxc", 4).index, 1);
+			eq_(scanner.findNextMatchSync("xxaxxbxxc", 7).index, 2);
+			eq_(scanner.findNextMatchSync("xxaxxbxxc", 9), null);
+		},
+		'includes the scanner with the results' () {
+			var scanner = new OnigScanner(["a"])
+			eq_(scanner.findNextMatchSync("a", 0).scanner, scanner);
+		}
+	},
+	'when the string searched contains unicode characters' : {
+		'returns the correct matching pattern' () {
+			var scanner = new OnigScanner(["1", "2"])
+			var match = scanner.findNextMatchSync('ab…cde21', 5)
+			eq_(match.index, 1);
+		}
+	},
+	'when the string searched contains surrogate pairs' : {
+		'counts paired characters as 2 characters in both arguments and return values' () {
+			var scanner = new OnigScanner(["Y", "X"])
+			var match = scanner.findNextMatchSync('a💻bYX', 0)
+			has_(match.captureIndices, [{index: 0, start: 4, end: 5, length: 1}]);
+
+			match = scanner.findNextMatchSync('a💻bYX', 1)
+			has_(match.captureIndices, [{index: 0, start: 4, end: 5, length: 1}]);
+
+			match = scanner.findNextMatchSync('a💻bYX', 3)
+			has_(match.captureIndices, [{index: 0, start: 4, end: 5, length: 1}]);
+
+			match = scanner.findNextMatchSync('a💻bYX', 4);
+			has_(match.captureIndices, [{index: 0, start: 4, end: 5, length: 1}]);
+
+			match = scanner.findNextMatchSync('a💻bYX', 5)
+			eq_(match.index, 1);
+			has_(match.captureIndices, [{index: 0, start: 5, end: 6, length: 1}]);
+		}
+	},
+	"returns false when the input string isn't a string" () {
+		var scanner = new OnigScanner(["1"])
+		eq_(scanner.findNextMatchSync(),null)
+		eq_(scanner.findNextMatchSync(null),null)
+		eq_(scanner.findNextMatchSync(2),null)
+		eq_(scanner.findNextMatchSync(false),null)
+	}
+});

@@ -1,0 +1,6 @@
+[submodule "Regex"]
+	path = Regex
+	url = https://github.com/tenbits/Regex
+[submodule "utils"]
+	path = utils
+	url = https://github.com/atmajs/utils
