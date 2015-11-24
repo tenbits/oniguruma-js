@@ -27,6 +27,8 @@ var OnigScanner;
 					bestIndex = i;
 				}
 				if (match[0].start === index) {
+					best = match;
+					bestIndex = i;
 					break;
 				}
 				if (match != best && match[0].start < best[0].start) {
