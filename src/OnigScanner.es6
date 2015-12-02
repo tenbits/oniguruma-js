@@ -15,6 +15,9 @@ var OnigScanner;
 			cb(null, match);
 		},
 		findNextMatchSync (input, index = 0) {
+			if (typeof input !== 'string') {
+				return null;
+			}
 			var imax = this.regexs.length,
 				i = -1, best, bestIndex;
 			while (++i < imax) {
