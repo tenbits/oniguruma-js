@@ -80,6 +80,15 @@ var OnigRegExp;
 	});
 
 	function createMatch(x, index) {
+		if (x == null || x.value == null)  {
+			return {
+				index: index,
+				start: 0,
+				end: 0,
+				match: '',
+				length: 0
+			};
+		}
 		var value = x.value || '';
 		return {
 			index: index,
