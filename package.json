@@ -15,6 +15,17 @@
     "url": "https://github.com/tenbits/oniguruma-js/issues"
   },  
   "devDependencies": {
-    "atma": "latest"
+    "atma": "latest",
+    "atma-loader-babel": "^1.0.19"
+  },
+  "atma": {
+    "plugins": [
+      "atma-loader-babel"
+    ],
+    "settings": {
+      "atma-loader-babel": {
+        "extensions": ["test", "es6"]
+      }
+    }
   }
 }
