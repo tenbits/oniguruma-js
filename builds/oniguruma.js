@@ -1,16 +1,18 @@
 (function(root, factory){
 	"use strict";
 
-	var isNode = (typeof window === 'undefined' || window.navigator == null);
+	var isNode = (typeof module !== 'undefined' || 'exports' in module);
+	var isBrowser = (typeof window !== 'undefined' || window.navigator !== null);
 	var global_ = isNode ? global : window;
 
 	function construct(){
 		var Onig = factory(global_);
 		if (isNode) {
 			module.exports = Onig;
-			return;
 		}
-		return window.Onig = Onig;
+		if (isBrowser) {
+			return window.Onig = Onig;
+		}
 	}
 
 	if (typeof define === 'function' && define.amd) {
